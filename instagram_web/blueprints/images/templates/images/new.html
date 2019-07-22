@@ -1,0 +1,15 @@
+{% extends '_layout.html'%}
+{%block title%}
+Image Upload
+{% endblock %}
+{% block header%}
+{% endblock %}
+{%block content%}
+<h1>Got An Image to Upload?</h2>
+<form encytype = "multipart/form-data" action="{{url_for('images.create', id = current_user.id)}}" methods="POST">
+    <div class="form-group">
+        <input type="file" name="uploaded_image" id="uploaded_image" class='form-control'>
+    </div>
+    <button type="submit" class="btn btn-primary form-control">Upload</button>
+</form>
+{%endblock%}

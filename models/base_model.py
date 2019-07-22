@@ -18,6 +18,7 @@ class BaseModel(pw.Model):
         else:
             return 0
 
+    # validate function in User Class will overwrite the one in BaseModel anyway so can uncomment
     def validate(self):
         print(
             f"Warning validation method not implemented for {str(type(self))}")
