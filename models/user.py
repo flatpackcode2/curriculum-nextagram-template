@@ -1,8 +1,10 @@
 from models.base_model import BaseModel
 from flask import flash
 import peewee as pw
+from playhouse.hybrid import hybrid_property
 import re
 from werkzeug.security import generate_password_hash, check_password_hash
+from config import S3_LOCATION, DEFAULT_IMAGE
 
 class User(BaseModel):
     first_name = pw.CharField(null=False)
@@ -10,6 +12,8 @@ class User(BaseModel):
     username = pw.CharField(unique=True, index=True)
     password = pw.CharField(null=False)
     email = pw.CharField(unique=True)
+    profile_image = pw.CharField(default=DEFAULT_IMAGE)
+    private=pw.BooleanField(default=False)
 
     #this model should return True if user is authenticated. But what sort of authentications do you normally do? 2FA?
     def is_authenticated(self):
@@ -17,6 +21,10 @@ class User(BaseModel):
     
     def is_active(self):
         return True
+
+    @hybrid_property
+    def profile_image_url(self):
+        return S3_LOCATION + self.profile_image
 
     def validate(self):
         if self.username!='' and self.password!='' and self.email!='' and self.first_name!='' and self.last_name!='':

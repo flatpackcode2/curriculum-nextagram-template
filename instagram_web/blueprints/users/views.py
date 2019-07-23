@@ -59,15 +59,71 @@ def edit(id):
         return render_template('403.html'), 403
 
 
+#REFACTOR THE CODE FOR update(id)
 @users_blueprint.route('/<id>', methods=['POST'])
 @login_required
 def update(id):
+    #get user by id
+    user=User.get_by_id(id)
+
+    new_username=''
+    new_email=''
+    new_firstname=''
+    new_lastname=''
+    message=[]
+
+    #1. get username from form
     username = request.form.get('username')
+
+    #check for changes in form
+    #check if value has been deleted
+    if username!='' and username!=current_user.username:
+        #check if username exists
+        if not User.get_or_none(User.username == username):
+            new_username=username
+        else:
+            flash('Username is already taken')
+            return redirect(url_for('users.edit', id=id))
+    else:
+        new_username = current_user.username
+    
+    #Update email
     email = request.form.get('email')
-    # Password needs a separate form / double-checking.
-    # password = request.form.get('password')
-    first_name = request.form.get('first_name')
-    last_name = request.form.get('last_name')
     
-    pass
+    if email!='' and email!=current_user.email:
+        if not User.get_or_none(User.email == email):
+            new_email=email
+        else:
+            flash('Email is already taken')
+            return redirect(url_for('users.edit', id=id))
+
+    else:
+        new_email = current_user.email
+
+    if email!='':
+        #check if username exists
+        if not User.get_or_none(User.email == email):
+            new_email=email
+    else:
+        new_email=user.email
     
+    #Update first_name
+    firstname = request.form.get('first_name')
+    if firstname!='':
+        new_firstname=firstname
+    else:
+        new_firstname=user.first_name
+
+    #Update last_name
+    lastname = request.form.get('last_name')
+    if lastname!='':
+        new_lastname=lastname
+    else:
+        new_lastname=user.last_name
+
+    #Username validation - to see if there is a function to do this in the model
+
+    #Update user model
+    q = User.update({'username':new_username, 'email':new_email, 'first_name':new_firstname, 'last_name':new_lastname}).where(User.id==id)  
+    q.execute()
+    return redirect(url_for('users.edit', id=id))
