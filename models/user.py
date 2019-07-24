@@ -30,7 +30,7 @@ class User(BaseModel):
         if self.username!='' and self.password!='' and self.email!='' and self.first_name!='' and self.last_name!='':
             duplicate_email = User.get_or_none(User.email == self.email)
             duplicate_username = User.get_or_none(User.username == self.username)            
-            if duplicate_username:
+            if duplicate_username: #add duplicate_username!=self.username?
                 self.errors.append('Username not unique')
             
             if duplicate_email:

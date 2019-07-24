@@ -40,10 +40,13 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-          <a class="nav-link" href="{{url_for('home')}}">Home <span class="sr-only">(current)</span></a>
-        </li>
         {%if current_user.is_authenticated%}
+        <li class="nav-item active">
+          <a class="nav-link" href="{{url_for('users.index')}}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <span class="navbar-text">{{ current_user.first_name }}'s page</span>
+        </li>
         <li class="nav-item">
           <a class="nav-link" href="{{url_for('sessions.delete')}}">Log Out</a>
         </li>
@@ -54,9 +57,8 @@
           </a>
           <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="{{url_for('users.edit', id=current_user.id)}}">Edit My Details</a>
-            <a class="dropdown-item" href="{{url_for('images.create', id = current_user.id)}}">Upload an image</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
+            <a class="dropdown-item" href="{{url_for('images.create', id = current_user.id)}}">Upload A Profile Image</a>
+            <a class="dropdown-item" href="{{url_for('images.create_two', id = current_user.id)}}">Upload Image To Album</a>
           </div>
         </li>
         {%else%}

@@ -34,4 +34,4 @@ S3_BUCKET = os.environ.get("S3_BUCKET")
 S3_KEY= os.environ.get("S3_KEY")
 S3_SECRET = os.environ.get("S3_SECRET")
 S3_LOCATION= f'http://{S3_BUCKET}.s3.us-east-2.amazonaws.com/'
-DEFAULT_IMAGE= 'default_image.png'
+DEFAULT_IMAGE= 'default_image.jpg'

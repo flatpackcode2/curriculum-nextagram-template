@@ -27,7 +27,7 @@ def create():
             # session['user_id']=user.id #manual way to log in user. Stores user id as an encrypted string in Cookies in browser.
             login_user(user)
             flash('Succesfully logged in!')
-            return redirect(url_for('home'))
+            return redirect(url_for('users.index'))
         else:
             flash('Login unsuccessful')
             return redirect(url_for('sessions.new'))

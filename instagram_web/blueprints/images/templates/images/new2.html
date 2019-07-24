@@ -6,8 +6,8 @@ Image Upload
 {% block header%}
 {% endblock %}
 {%block content%}
-<h1>Got An Image to Upload?</h2>
-<form enctype = "multipart/form-data" action="{{url_for('images.create', id = current_user.id)}}" method="POST" multiple="True">
+<h1>Upload Your Images Here!</h2>
+<form enctype = "multipart/form-data" action="{{url_for('images.create_two', id = current_user.id)}}" method="POST" >
     <div class="form-group">
         <input type="file" name="image_file" id="image_file" class='form-control'>
     </div>

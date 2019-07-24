@@ -13,6 +13,13 @@ def new():
     return render_template('users/new.html')
 
 
+#displays all users & index
+@users_blueprint.route('/', methods=['GET'])
+def index():
+    users= User.select().where(User.username!=current_user.username)
+    return render_template('users/index.html', users=users)
+
+
 @users_blueprint.route('/', methods=['POST'])
 def create():
     username = request.form.get('username')
@@ -33,20 +40,15 @@ def create():
 
         if user.save():
             flash('Account successfully created')
-            return redirect(url_for('home'))
+            return redirect(url_for('users.index'))
         else:
             return render_template('users/new.html', errors=user.errors)
 
 
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
-    pass
-
-
-@users_blueprint.route('/', methods=["GET"])
-def index():
-    return "USERS"
-
+    user=User.get(User.username == username)
+    return render_template('users/show.html', user=user)
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 @login_required

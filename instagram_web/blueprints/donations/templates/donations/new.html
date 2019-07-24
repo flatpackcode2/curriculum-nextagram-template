@@ -1,0 +1,89 @@
+{# shift this to edit user page / sign-up page. possibly use the blueprint at the sign-up / edit #}
+{% extends '_layout.html'%}
+{%block title%}
+Donation Page
+{% endblock %}
+{% block header%}
+  <meta charset="utf-8">
+  <script src="https://js.braintreegateway.com/web/dropin/1.19.0/js/dropin.min.js"></script>
+{% endblock %}
+{%block content%}
+<h1>Donate to {{username}} here:</h2>
+  <form id="pmn-form" action="{{url_for('donations.payment')}}" method="POST">
+    <div class="form-group">
+      <input type="hidden" id="pmn-input" name="payment_method_nonce" value="None">
+      <input type="hidden" name="recepient" value="{{username}}">
+      <label for="donation_value">USD:</label>
+      <input type="text" id="donation_value" name="donation_value">
+    </div>
+    <div class="form-group">
+      <input type='hidden' value={{csrf_token()}} name='csrf_token' class="form-control">
+    </div>
+  </form>
+  <div id="dropin-container"></div>
+  <button id="submit-button">Request payment method</button>
+  <script>
+    const button = document.querySelector('#submit-button');
+    const form = document.getElementById('pmn-form');
+    const paymentNonceContainer = document.getElementById('pmn-input');
+
+    braintree.dropin.create(
+      {
+        authorization: '{{client_token}}',
+        container: '#dropin-container'
+      },
+      function (createErr, instance) {
+      button.addEventListener('click', function () {
+        instance.requestPaymentMethod(function (err, payload) {
+          // Submit payload.nonce to your server
+          console.log(payload)
+          paymentNonceContainer.value = payload.nonce
+          form.submit()
+        });
+      });
+    });
+  
+  {#
+  /*ALTERNATIVE METHOD USING AJAX:
+  const button = document.querySelector('#submit-button');
+
+  braintree.dropin.create({
+    // Insert your tokenization key here
+    authorization: 'client_token',
+    container: '#dropin-container'
+  }, function (createErr, instance) {
+    button.addEventListener('click', function () {
+      instance.requestPaymentMethod(function (requestPaymentMethodErr, payload) {
+        // When the user clicks on the 'Submit payment' button this code will send the
+        // encrypted payment information in a variable called a payment method nonce
+        $.ajax({
+          type: 'POST',
+          url: '/payment',
+          data: {'paymentMethodNonce': payload.nonce}
+        }).done(function(result) {
+          // Tear down the Drop-in UI
+          instance.teardown(function (teardownErr) {
+            if (teardownErr) {
+              console.error('Could not tear down Drop-in UI!');
+            } else {
+              console.info('Drop-in UI has been torn down!');
+              // Remove the 'Submit payment' button
+              $('#submit-button').remove();
+            }
+          });
+
+          if (result.success) {
+            $('#checkout-message').html('<h1>Success</h1><p>Your Drop-in UI is working! Check your <a href="https://sandbox.braintreegateway.com/login">sandbox Control Panel</a> for your test transactions.</p><p>Refresh to try another transaction.</p>');
+          } else {
+            console.log(result);
+            $('#checkout-message').html('<h1>Error</h1><p>Check your console.</p>');
+          }
+        });
+      });
+    });
+  });
+    */ #}
+
+
+  </script>
+{%endblock%}
