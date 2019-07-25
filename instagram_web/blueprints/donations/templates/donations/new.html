@@ -12,7 +12,7 @@ Donation Page
   <form id="pmn-form" action="{{url_for('donations.payment')}}" method="POST">
     <div class="form-group">
       <input type="hidden" id="pmn-input" name="payment_method_nonce" value="None">
-      <input type="hidden" name="recepient" value="{{username}}">
+      <input type="hidden" name="recepient_name" value="{{username}}">
       <label for="donation_value">USD:</label>
       <input type="text" id="donation_value" name="donation_value">
     </div>
