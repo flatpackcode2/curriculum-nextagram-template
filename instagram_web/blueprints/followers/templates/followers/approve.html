@@ -1,0 +1,44 @@
+{% extends "_layout.html" %}
+{% block title %}
+Approval Page
+{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content%}
+<div class="container-fluid">
+    <h1>Hey {{current_user.username}}, how about making some fans?</h1>
+</div>
+
+<div class="container-fluid">
+    {%for relationship in current_user.fans%}
+    {% if relationship.approved==False%}
+    <div class="row shadow p-3 mb-5 bg-light rounded align-items-center">
+        <div class="col-md-2">
+            <img alt="no image" src="{{relationship.fan.profile_image_url}}" class="border border-dark" width="100" height="100"/>
+        </div>
+        <div class="col-md-6">
+            <h4>{{relationship.fan.username}}</h4><br>
+            Lorem ipsum, dolor sit amet consectetur adipisicing elit. Deleniti, ut.
+        </div>
+        <div class="col-md-1">
+            <form action="{{url_for('followers.update_approval', id=current_user.id)}}" method="post">
+                <input type="hidden" name="approval_status" value="Approve">
+                <input type="hidden" name="relationship_id" value={{relationship.id}}>
+                <input name="csrf_token" type="hidden" value= {{csrf_token()}} class="form-control">
+                <button type="submit" class="btn btn-success">Approve</button>
+            </form>
+        </div>
+        <div class="col-md-1">
+            <form action="{{url_for('followers.update_approval', id=current_user.id)}}" method="post">
+                <input type="hidden" name="approval_status" value="Reject">
+                <input type="hidden" name="relationship_id" value={{relationship.id}}>
+                <input name="csrf_token" type="hidden" value= {{csrf_token()}} class="form-control">
+                <button type="submit" class="btn btn-danger">Reject</button>
+            </form>
+        </div>
+    </div>
+    {% endif%}
+    {% endfor %}
+</div>
+
+{% endblock%}

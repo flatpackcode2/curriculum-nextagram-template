@@ -6,7 +6,6 @@ from playhouse.hybrid import hybrid_property
 
 class Image(BaseModel):
     filename = pw.CharField(null=True)
-    # profile_pic=pw.BooleanField(default=False)
     user = pw.ForeignKeyField(User, backref='images')
 
     @hybrid_property

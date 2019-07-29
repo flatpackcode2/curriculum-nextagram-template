@@ -1,12 +1,14 @@
 {# shift this to edit user page / sign-up page. possibly use the blueprint at the sign-up / edit #}
 {% extends '_layout.html'%}
+{% block header%}
+
+{% endblock %}
 {%block title%}
 Image Upload
 {% endblock %}
-{% block header%}
-{% endblock %}
 {%block content%}
 <h1>Got A Profile Image to Upload?</h2>
+
 <form enctype = "multipart/form-data" action="{{url_for('images.create', id = current_user.id)}}" method="POST">
     <div class="form-group">
         <input type="file" name="image_file" id="image_file" class='form-control'>

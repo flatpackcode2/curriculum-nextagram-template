@@ -22,13 +22,14 @@
 <body>
   {% with messages = get_flashed_messages()%}
     {%if messages%}
-    <ul class='flashes'>
       {% for message in messages%}
-      <li>
-        {{message}}
-      </li>
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          {{message}}
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
       {% endfor %}
-    </ul>
     {%endif%}
   {%endwith%}
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -59,6 +60,7 @@
             <a class="dropdown-item" href="{{url_for('users.edit', id=current_user.id)}}">Edit My Details</a>
             <a class="dropdown-item" href="{{url_for('images.create', id = current_user.id)}}">Upload A Profile Image</a>
             <a class="dropdown-item" href="{{url_for('images.create_two', id = current_user.id)}}">Upload Image To Album</a>
+            <a class="dropdown-item" href="{{url_for('followers.edit_approval', id = current_user.id)}}">My Followers</a>
           </div>
         </li>
         {%else%}

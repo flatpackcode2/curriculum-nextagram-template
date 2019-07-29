@@ -36,25 +36,31 @@ def payment():
                     "submit_for_settlement": True
                     }
         })
-        # output = payment_email(recepient_name = recepient_name, donor_email='colinnoahpeter@gmail.com', donation=donation)
-        message = Mail(
-            from_email= 'welcome@nextagram.com',
-            to_emails= 'colinpeter.nus@gmail.com',
-            subject=f'Your donation has been successful',
-            html_content= '<h1>WTFFFFFFFFFFFFF</h1>'
-        )
-        try:
-            breakpoint()
-            print('try triggered')
-            sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
-            response = sg.send(message)
-            print(response.status_code)
-            print(response.body)
-            print(response.headers)
+        output = payment_email(recepient_name = recepient_name, donor_email='colinnoahpeter@gmail.com', donation=donation)
 
-        except Exception as e:
-            print('Something has gone wrong')
-            print(str(e))
+        if output:
+            return render_template('/donations/success.html')
+        else:
             return render_template('/donations/failure.html')
+            
+        # message = Mail(
+        #     from_email= 'welcome@nextagram.com',
+        #     to_emails= 'colinnoahpeter@gmail.com,
+        #     subject=f'Your donation has been successful',
+        #     html_content= '<h1>WTFFFFFFFFFFFFF</h1>'
+        # )
+        # try:
+        #     breakpoint()
+        #     print('try triggered')
+        #     sg = SendGridAPIClient(os.getenv('SENDGRID_API_KEY'))
+        #     response = sg.send(message)
+        #     print(response.status_code)
+        #     print(response.body)
+        #     print(response.headers)
+
+        # except Exception as e:
+        #     print('Something has gone wrong')
+        #     print(str(e))
+        #     return render_template('/donations/failure.html')
         
-        return render_template('/donations/success.html')
+        # return render_template('/donations/success.html')

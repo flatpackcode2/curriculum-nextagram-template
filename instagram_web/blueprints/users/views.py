@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from models.user import User
+from models.relationship import Relationship
 from werkzeug.security import generate_password_hash, check_password_hash
 
 users_blueprint = Blueprint('users',
@@ -16,6 +17,8 @@ def new():
 #displays all users & index
 @users_blueprint.route('/', methods=['GET'])
 def index():
+    #AttributeError: 'AnonymousUserMixin' object has no attribute 'username'
+    #when you sign-up it gets redirected here which looks for username in a non-existent current_user
     users= User.select().where(User.username!=current_user.username)
     return render_template('users/index.html', users=users)
 
@@ -40,7 +43,7 @@ def create():
 
         if user.save():
             flash('Account successfully created')
-            return redirect(url_for('users.index'))
+            return redirect(url_for('sessions.new'))
         else:
             return render_template('users/new.html', errors=user.errors)
 
@@ -48,7 +51,8 @@ def create():
 @users_blueprint.route('/<username>', methods=["GET"])
 def show(username):
     user=User.get(User.username == username)
-    return render_template('users/show.html', user=user)
+    relationship = Relationship.get_or_none(Relationship.idol == user.id, Relationship.fan == current_user.id)
+    return render_template('users/show.html', user=user, relationship=relationship)
 
 @users_blueprint.route('/<id>/edit', methods=['GET'])
 @login_required
@@ -72,10 +76,15 @@ def update(id):
     new_email=''
     new_firstname=''
     new_lastname=''
+    new_private=user.private
     message=[]
 
     #1. get username from form
     username = request.form.get('username')
+    email = request.form.get('email')
+    firstname = request.form.get('first_name')
+    lastname = request.form.get('last_name')
+    private = request.form.get('private')
 
     #check for changes in form
     #check if value has been deleted
@@ -90,7 +99,6 @@ def update(id):
         new_username = current_user.username
     
     #Update email
-    email = request.form.get('email')
     
     if email!='' and email!=current_user.email:
         if not User.get_or_none(User.email == email):
@@ -110,22 +118,41 @@ def update(id):
         new_email=user.email
     
     #Update first_name
-    firstname = request.form.get('first_name')
     if firstname!='':
         new_firstname=firstname
     else:
         new_firstname=user.first_name
 
     #Update last_name
-    lastname = request.form.get('last_name')
     if lastname!='':
         new_lastname=lastname
     else:
         new_lastname=user.last_name
-
+    
+    #Update privacy status
+    if private:
+        new_private=True
+    else:
+        new_private=False
+        
     #Username validation - to see if there is a function to do this in the model
 
     #Update user model
-    q = User.update({'username':new_username, 'email':new_email, 'first_name':new_firstname, 'last_name':new_lastname}).where(User.id==id)  
+    q = User.update({'username':new_username, 'email':new_email, 'first_name':new_firstname, 'last_name':new_lastname, 'private':new_private}).where(User.id==id)  
     q.execute()
+    flash('Profile updated!')
     return redirect(url_for('users.edit', id=id))
+
+    # Works in users/views.py. Just need to port to followers/new
+    # @users_blueprint.route('/<username>/follow', methods=['GET'])
+    # def add_follower(username):
+    #     fan_id = current_user.id
+    #     idol_username = username
+    #     idol= User.get(User.username == idol_username)
+    #     print('******************')
+    #     print(f"fan_id: {fan_id}")
+    #     print(f"idol_id: {idol.id}")
+    #     print('******************')
+    #     print('**********')
+    #     print('*****')
+    #     return render_template('users/show.html', user=idol)
