@@ -14,6 +14,10 @@ app = Flask('NEXTAGRAM', root_path=web_dir)
 app.secret_key = os.getenv('SECRET_KEY')
 csrf=CSRFProtect(app)
 
+from flask_jwt_extended import JWTManager
+jwt = JWTManager(app)
+
+
 login_manager = LoginManager()
 login_manager.init_app(app)
 
